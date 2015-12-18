@@ -1,0 +1,170 @@
+<% var title = "Collections Page"; %>
+<% include partial-main.ejs %>
+
+<!--page content here-->
+
+		<aside> 
+			<p>
+				Click on the objects to see the color change, click on submit to send the data to server and refresh the page to see the change!
+
+			</p>
+		</aside>
+		<br/>
+		<br/>
+
+	<div class="text-center">
+		<h1> Collections Page </h1>
+
+		<br/>
+		<Button id="submit" onClick="onSubmit()"> Submit</Button>
+
+	</div>
+
+	<div id="container">
+		<svg id="mySVG" > </svg>
+	</div>
+
+	
+
+	<script>
+			var objectColl = <%-objects%>
+			
+			var svg=document.getElementById("mySVG");
+			
+
+			var xPos=0;
+			var yPos=0;
+			var redObjs=[];
+			var blueObjs=[];
+			var greenObjs=[];
+
+
+
+			function init(){
+
+				for(var i=0;i<objectColl.length;i++){
+					switch(objectColl[i].color){
+
+
+						case "red":
+							
+							redObjs.push(objectColl[i]);
+							break;
+						case "blue":
+							
+							blueObjs.push(objectColl[i]);
+							break;
+						case "green":
+							
+							greenObjs.push(objectColl[i]);
+							break;
+
+					}
+
+
+				}
+
+				createObjs(redObjs,"#ff0000");
+				yPos+=85;
+				xPos=0;
+				createObjs(blueObjs,"blue");
+				yPos+=85;
+				xPos=0;
+				createObjs(greenObjs,"green");
+			}
+
+
+			function createObjs(arrObjs,col){
+
+				for(var i=0;i<arrObjs.length;i++){
+					
+					    var rect = document.createElementNS("http://www.w3.org/2000/svg", "rect"); 
+					    var color=arrObjs[i].color;
+					    rect.setAttribute('x', xPos);
+					    rect.setAttribute('y', yPos);
+					    rect.setAttribute('width', 50);
+					    rect.setAttribute('height', 80);
+					    rect.setAttribute('style', "stroke:#000000; fill:"+color);
+					    rect.id = arrObjs[i].id;
+					    rect.onclick=handleClick;
+					    svg.appendChild(rect);
+
+					   
+						xPos+=60;
+				}
+
+
+			
+				
+			}
+
+			
+			function handleClick(e){
+				
+
+
+				switch(e.target.style.fill){
+
+					case "red":
+						e.target.style.fill="blue";
+						break;
+
+					case "blue":
+						e.target.style.fill="green";
+						break;
+
+					case "green":
+						e.target.style.fill="red";
+						break;	
+
+				}
+
+				for(var i=0;i<objectColl.length;i++){
+
+				
+					if(objectColl[i].id==e.target.id){
+
+						objectColl[i].color=e.target.style.fill;
+					}
+					
+				}
+
+				
+				
+			}
+			
+			function onSubmit(){
+
+			
+		          var http = new XMLHttpRequest();
+			        var params = JSON.stringify(objectColl);
+			        http.open("POST", "http://localhost:3000/objects", true);
+
+			        http.setRequestHeader("Content-type", "application/json");
+			      
+
+			        http.onreadystatechange = function() {
+			           
+			            if (http.readyState == 4 && http.status == 200) {
+
+			           		 console.log('http.readyState='+http.readyState);
+					          console.log('http.status='+http.status);
+			            }
+			            else {
+			                console.log('readyState=' + http.readyState + ', status: ' + http.status);
+			                
+			            }
+			        }
+
+			        
+			        http.send(params);
+			       
+					
+			}
+
+			init();
+			
+
+	 </script>
+
+<% include partial-footer.ejs %>

@@ -1,0 +1,72 @@
+extends layout
+
+
+
+block content
+  
+
+  div#wrapper  
+  
+  -function something() {
+    -console.log('something')
+    - for (var i = 0; i < document.getElementById("form").elements.length; i++ ){if (form.elements[i].type == 'radio') {alert(form.elements[i].value)}}
+  -}
+
+  - var redCol = [] 
+  - var blueCol= [] 
+  - var greenCol=[]
+
+  each val in objects
+    
+    case val.color
+     when "red"
+      - redCol.push(val)
+      
+     when "blue"
+      - blueCol.push(val)
+     
+     when "green"
+      - greenCol.push(val)
+  
+  form#myForm
+   each val in redCol
+     canvas#myCanvas(width='200', height='100', style='border:5px solid #ff0000; margin:5px')
+  
+   input(type='radio', class='redCol', value='green')
+   | Green 
+
+   input(type='radio', class='redCol', value='blue')
+   | Blue 
+  
+   br
+
+   each val in blueCol
+     canvas#myCanvas(width='200', height='100', style='border:5px solid #0000ff; margin:5px')
+
+   input(type='radio', class='blueCol', value='green')
+   | Green 
+
+   input(type='radio', class='blueCol', value='red')
+   | Red 
+  
+   br
+ 
+   each val in greenCol
+     canvas#myCanvas(width='200', height='100', style='border:5px solid #00ff00; margin:5px')
+  
+   input(type='radio', class='greenCol', value='red')
+   | Red 
+
+   input(type='radio', class='greenCol', value='blue')
+   | Blue 
+  
+  
+   br
+
+   button(onclick='#{something()}') Submit
+
+
+
+
+  
+      
